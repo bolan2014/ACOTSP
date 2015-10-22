@@ -9,7 +9,7 @@
 const double ROU=0.5; //信息素残留参数
 
 const int N_ANT_COUNT=256; //蚂蚁数量
-const int N_IT_COUNT=30; //迭代次数
+const int N_IT_COUNT=15; //迭代次数
 const int N_CITY_COUNT=150; //城市数量
 
 const double DBQ=100.0; //总的信息素
@@ -30,7 +30,7 @@ double x_Ary[N_CITY_COUNT],y_Ary[N_CITY_COUNT];
 //返回指定范围内的随机整数
 int rnd(int nLow,int nUpper)
 {
-    return nLow+(nUpper-nLow)*rand()/(RAND_MAX+1);
+    return (int)(nLow+(nUpper-nLow)*rand()/((double)RAND_MAX+1.0));
 }
 
 //返回0~1范围内的随机浮点数(device)
@@ -291,10 +291,10 @@ void CTsp::readTsp()
 {
 	int i,j;
 
-	FILE *fp=fopen("ch150.tsp","r") ;
+	FILE *fp=fopen("tsp/ch150.tsp","r") ;
 	if(fp == NULL)
 	{
-		printf("file not found!\n");
+		printf("sorry,file not found!\n");
 		exit(0);
 	}
 
