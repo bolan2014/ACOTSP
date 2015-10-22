@@ -8,7 +8,7 @@ const double BETA=3.0;   //期望因子，城市间距离的重要程度
 const double ROU=0.5; //信息素残留参数
 
 const int N_ANT_COUNT=256; //蚂蚁数量
-const int N_IT_COUNT=30; //迭代次数
+const int N_IT_COUNT=15; //迭代次数
 const int N_CITY_COUNT=318; //城市数量
 
 const double DBQ=100.0; //总的信息素
@@ -23,7 +23,7 @@ double x_Ary[N_CITY_COUNT],y_Ary[N_CITY_COUNT];
 //返回指定范围内的随机整数
 int rnd(int nLow,int nUpper)
 {
-    return nLow+(nUpper-nLow)*rand()/(RAND_MAX+1);
+    return (int)(nLow+(nUpper-nLow)*rand()/((double)RAND_MAX+1.0));
 }
 
 //返回指定范围内的随机浮点数
@@ -265,7 +265,7 @@ void CTsp::readTsp()
 {
 	int i,j;
 
-	FILE *fp=fopen("lin318.tsp","r") ;
+	FILE *fp=fopen("tsp/lin318.tsp","r") ;
 	if(fp == NULL)
 	{
 		printf("file not found!\n");
