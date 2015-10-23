@@ -1,1 +1,1 @@
-const int N_CITY_COUNT=51; //城市数量
+const int N_CITY_COUNT = 51; //number of cities
