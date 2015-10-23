@@ -1,4 +1,7 @@
-#include "tsp.h"
+const double ALPHA = 2.0;
+const double BETA = 3.0;
+
+const int N_CITY_COUNT = 51;
 
 class CAnt
 {
@@ -17,7 +20,7 @@ class CAnt
 
   public:
 
-    int ChooseNextCity(); //ants choose next city
+    int ChooseNextCity(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_CITY_COUNT][N_CITY_COUNT]); //ants choose next city
     void Init(); //initial ants'info
     void Move(); //ants'move
     void Search(); //ants search path
