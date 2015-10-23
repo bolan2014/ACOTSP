@@ -29,7 +29,7 @@ double ROUND(double dbA)
 }
 
 //初始化函数，蚂蚁搜索前调用
-void CAnt::Init()
+/*void CAnt::Init()
 {
 
     for (int i=0;i<N_CITY_COUNT;i++)
@@ -54,7 +54,7 @@ void CAnt::Init()
     m_nMovedCityCount=1;
 
 }
-
+*/
 //选择下一个城市
 //返回值 为城市编号
 int CAnt::ChooseNextCity()
