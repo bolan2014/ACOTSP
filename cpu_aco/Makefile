@@ -231,10 +231,16 @@ else
 	@echo "Sample is ready - all dependencies have been met"
 endif
 
-acotsp.o:acotsp.cu
+acotsp.o: acotsp.cu
 	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
 
-acotsp: acotsp.o
+rand.o: rand.cpp
+	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
+
+ant.o: ant.cpp
+	$(EXEC) $(NVCC) $(INCLUDES) $(ALL_CCFLAGS) $(GENCODE_FLAGS) -o $@ -c $<
+
+acotsp: acotsp.o rand.o ant.cpp
 	$(EXEC) $(NVCC) $(ALL_LDFLAGS) $(GENCODE_FLAGS) -o $@ $+ $(LIBRARIES)
 	$(EXEC) mkdir -p ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
 	$(EXEC) cp $@ ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)
@@ -243,7 +249,7 @@ run: build
 	$(EXEC) ./acotsp
 
 clean:
-	rm -f acotsp acotsp.o
+	rm -f acotsp acotsp.o rand.o ant.o
 	rm -rf ../../bin/$(TARGET_ARCH)/$(TARGET_OS)/$(BUILD_TYPE)/acotsp
 
 clobber: clean
