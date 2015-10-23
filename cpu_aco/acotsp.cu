@@ -30,7 +30,7 @@ double ROUND(double dbA)
 
 //选择下一个城市
 //返回值 为城市编号
-int CAnt::ChooseNextCity()
+/*int CAnt::ChooseNextCity()
 {
 
     int nSelectedCity=-1; //返回结果，先暂时把其设置为-1
@@ -97,7 +97,7 @@ int CAnt::ChooseNextCity()
     //==============================================================================
     //返回结果，就是城市的编号
     return nSelectedCity;
-}
+}*/
 
 
 //蚂蚁在城市间移动
