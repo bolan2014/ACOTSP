@@ -3,6 +3,8 @@
 #include <math.h>
 #include <time.h>
 
+#include "rand.h"
+
 const double ALPHA=2.0; //启发因子，信息素的重要程度
 const double BETA=3.0;   //期望因子，城市间距离的重要程度
 const double ROU=0.5; //信息素残留参数
@@ -21,10 +23,10 @@ double g_Distance[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间距离
 double x_Ary[N_CITY_COUNT],y_Ary[N_CITY_COUNT];
 
 //返回指定范围内的随机整数
-int rnd(int nLow,int nUpper)
-{
-    return (int)(nLow+(nUpper-nLow)*rand()/((double)RAND_MAX+1.0));
-}
+//int rnd(int nLow,int nUpper)
+//{
+//    return (int)(nLow+(nUpper-nLow)*rand()/((double)RAND_MAX+1.0));
+//}
 
 //返回指定范围内的随机浮点数
 double rnd(double dbLow,double dbUpper)
