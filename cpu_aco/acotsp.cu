@@ -3,11 +3,8 @@
 #include <math.h>
 #include <time.h>
 
-#include "rand.h"
 #include "ant.h"
 
-const double ALPHA=2.0; //启发因子，信息素的重要程度
-const double BETA=3.0;   //期望因子，城市间距离的重要程度
 const double ROU=0.5; //信息素残留参数
 
 const int N_ANT_COUNT=256; //蚂蚁数量
@@ -16,8 +13,8 @@ const int N_IT_COUNT=15; //迭代次数
 const double DBQ=100.0; //总的信息素
 const double DB_MAX=10e9; //一个标志数，10的9次方
 
-double g_Trial[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间信息素，就是环境信息素
-double g_Distance[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间距离
+double g_Trial[N_CITY_COUNT][N_CITY_COUNT]; //pheromone between every 2 cities
+double g_Distance[N_CITY_COUNT][N_CITY_COUNT]; //distance between every 2 cities
 
 //tsp城市坐标数据
 double x_Ary[N_CITY_COUNT],y_Ary[N_CITY_COUNT];
@@ -28,88 +25,16 @@ double ROUND(double dbA)
     return (double)((int)(dbA+0.5));
 }
 
-//选择下一个城市
-//返回值 为城市编号
-/*int CAnt::ChooseNextCity()
-{
-
-    int nSelectedCity=-1; //返回结果，先暂时把其设置为-1
-
-    //==============================================================================
-    //计算当前城市和没去过的城市之间的信息素总和
-
-    double dbTotal=0.0;
-    double prob[N_CITY_COUNT]; //保存各个城市被选中的概率
-
-    for (int i=0;i<N_CITY_COUNT;i++)
-    {
-        if (m_nAllowedCity[i] == 1) //城市没去过
-        {
-            prob[i]=pow(g_Trial[m_nCurCityNo][i],ALPHA)*pow(1.0/g_Distance[m_nCurCityNo][i],BETA); //该城市和当前城市间的信息素
-            dbTotal=dbTotal+prob[i]; //累加信息素，得到总和
-        }
-        else //如果城市去过了，则其被选中的概率值为0
-        {
-            prob[i]=0.0;
-        }
-    }
-
-    //==============================================================================
-    //进行轮盘选择
-    double dbTemp=0.0;
-    if (dbTotal > 0.0) //总的信息素值大于0
-    {
-        dbTemp=rnd(0.0,dbTotal); //取一个随机数
-
-        for (int i=0;i<N_CITY_COUNT;i++)
-        {
-            if (m_nAllowedCity[i] == 1) //城市没去过
-            {
-                dbTemp=dbTemp-prob[i]; //这个操作相当于转动轮盘，如果对轮盘选择不熟悉，仔细考虑一下
-                if (dbTemp < 0.0) //轮盘停止转动，记下城市编号，直接跳出循环
-                {
-                    nSelectedCity=i;
-                    break;
-                }
-            }
-        }
-    }
-
-    //==============================================================================
-    //如果城市间的信息素非常小 ( 小到比double能够表示的最小的数字还要小 )
-    //那么由于浮点运算的误差原因，上面计算的概率总和可能为0
-    //会出现经过上述操作，没有城市被选择出来
-    //出现这种情况，就把第一个没去过的城市作为返回结果
-
-    //题外话：刚开始看的时候，下面这段代码困惑了我很长时间，想不通为何要有这段代码，后来才搞清楚。
-    if (nSelectedCity == -1)
-    {
-        for (int i=0;i<N_CITY_COUNT;i++)
-        {
-            if (m_nAllowedCity[i] == 1) //城市没去过
-            {
-                nSelectedCity=i;
-                break;
-            }
-        }
-    }
-
-    //==============================================================================
-    //返回结果，就是城市的编号
-    return nSelectedCity;
-}*/
-
-
 //蚂蚁在城市间移动
-void CAnt::Move()
+/*void CAnt::Move()
 {
-    int nCityNo=ChooseNextCity(); //选择下一个城市
+    int nCityNo=ChooseNextCity(g_Trial, g_Distance); //选择下一个城市
 
     m_nPath[m_nMovedCityCount]=nCityNo; //保存蚂蚁走的路径
     m_nAllowedCity[nCityNo]=0;//把这个城市设置成已经去过了
     m_nCurCityNo=nCityNo; //改变当前所在城市为选择的城市
     m_nMovedCityCount++; //已经去过的城市数量加1
-}
+}*/
 
 //蚂蚁进行搜索一次
 void CAnt::Search()
@@ -119,7 +44,7 @@ void CAnt::Search()
     //如果蚂蚁去过的城市数量小于城市数量，就继续移动
     while (m_nMovedCityCount < N_CITY_COUNT)
     {
-        Move();
+        Move(g_Trial, g_Distance);
     }
 
     //完成搜索后计算走过的路径长度
