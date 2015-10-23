@@ -1,3 +1,5 @@
+#include <math.h>
+
 #include "ant.h"
 #include "rand.h"
 
@@ -36,63 +38,55 @@ void CAnt::Init()
     m_nMovedCityCount = 1;
 }
 
-int CAnt::ChooseNextCity()
+int CAnt::ChooseNextCity(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_CITY_COUNT][N_CITY_COUNT])
 {
 
-    int nSelectedCity=-1; //返回结果，先暂时把其设置为-1
+    int nSelectedCity = -1; //default -1
 
-    //==============================================================================
-    //计算当前城市和没去过的城市之间的信息素总和
+    //calculate the total pheromone of current cities and the cities not visited 
+    double dbTotal = 0.0;
+    double prob[N_CITY_COUNT]; //save the selected probability of each city
 
-    double dbTotal=0.0;
-    double prob[N_CITY_COUNT]; //保存各个城市被选中的概率
-
-    for (int i=0;i<N_CITY_COUNT;i++)
+    for (int i=0; i<N_CITY_COUNT; i++)
     {
-        if (m_nAllowedCity[i] == 1) //城市没去过
+        if (m_nAllowedCity[i] == 1) //the city has not been visited
         {
-            prob[i]=pow(g_Trial[m_nCurCityNo][i],ALPHA)*pow(1.0/g_Distance[m_nCurCityNo][i],BETA); //该城市和当前城市间的信息素
-            dbTotal=dbTotal+prob[i]; //累加信息素，得到总和
+            //calculate pheromone between this city and current city
+            prob[i] = pow(g_Trial[m_nCurCityNo][i], ALPHA) * pow(1.0/g_Distance[m_nCurCityNo][i], BETA);
+            dbTotal = dbTotal+prob[i]; //calculate the sum of pheromone
         }
-        else //如果城市去过了，则其被选中的概率值为0
+        else //the city has been visited
         {
-            prob[i]=0.0;
+            prob[i] = 0.0;
         }
     }
 
-    //==============================================================================
-    //进行轮盘选择
-    double dbTemp=0.0;
-    if (dbTotal > 0.0) //总的信息素值大于0
+    //Roulette wheel selection
+    double dbTemp = 0.0;
+    if (dbTotal > 0.0) //sum of pheromone > 0
     {
-        dbTemp=rnd(0.0,dbTotal); //取一个随机数
+        dbTemp=rnd(0.0, dbTotal); //generate a random between 0 and sum of pheromone
 
-        for (int i=0;i<N_CITY_COUNT;i++)
+        for (int i=0; i<N_CITY_COUNT; i++)
         {
-            if (m_nAllowedCity[i] == 1) //城市没去过
+            if (m_nAllowedCity[i] == 1) //ant has not been to this city
             {
-                dbTemp=dbTemp-prob[i]; //这个操作相当于转动轮盘，如果对轮盘选择不熟悉，仔细考虑一下
-                if (dbTemp < 0.0) //轮盘停止转动，记下城市编号，直接跳出循环
+                dbTemp = dbTemp-prob[i]; //Roulette rotating
+                if (dbTemp < 0.0) //ant lost in this city
                 {
-                    nSelectedCity=i;
+                    nSelectedCity = i;
                     break;
                 }
             }
         }
     }
 
-    //==============================================================================
-    //如果城市间的信息素非常小 ( 小到比double能够表示的最小的数字还要小 )
-    //那么由于浮点运算的误差原因，上面计算的概率总和可能为0
-    //会出现经过上述操作，没有城市被选择出来
-    //出现这种情况，就把第一个没去过的城市作为返回结果
-
-    //题外话：刚开始看的时候，下面这段代码困惑了我很长时间，想不通为何要有这段代码，后来才搞清楚。
+    //if no city is chosen, ant will choose the first city not visited by id order
     if (nSelectedCity == -1)
     {
-        for (int i=0;i<N_CITY_COUNT;i++)
+        for (int i=0; i<N_CITY_COUNT; i++)
         {
-            if (m_nAllowedCity[i] == 1) //城市没去过
+            if (m_nAllowedCity[i] == 1) //the city has not been visited
             {
                 nSelectedCity=i;
                 break;
@@ -100,7 +94,15 @@ int CAnt::ChooseNextCity()
         }
     }
 
-    //==============================================================================
-    //返回结果，就是城市的编号
+    //return the id of city which is chosen
     return nSelectedCity;
+}
+
+void CAnt::Move(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_CITY_COUNT][N_CITY_COUNT])
+{
+    int nCityNo = ChooseNextCity(g_Trial, g_Distance); 
+    m_nPath[m_nMovedCityCount] = nCityNo; 
+    m_nAllowedCity[nCityNo] = 0;
+    m_nCurCityNo = nCityNo; 
+    m_nMovedCityCount ++; 
 }
