@@ -28,33 +28,6 @@ double ROUND(double dbA)
     return (double)((int)(dbA+0.5));
 }
 
-//初始化函数，蚂蚁搜索前调用
-/*void CAnt::Init()
-{
-
-    for (int i=0;i<N_CITY_COUNT;i++)
-    {
-        m_nAllowedCity[i]=1; //设置全部城市为没有去过
-        m_nPath[i]=0; //蚂蚁走的路径全部设置为0
-    }
-
-    //蚂蚁走过的路径长度设置为0
-    m_dbPathLength=0.0;
-
-    //随机选择一个出发城市
-    m_nCurCityNo=rnd(0,N_CITY_COUNT);
-
-    //把出发城市保存入路径数组中
-    m_nPath[0]=m_nCurCityNo;
-
-    //标识出发城市为已经去过了
-    m_nAllowedCity[m_nCurCityNo]=0;
-
-    //已经去过的城市数量设置为1
-    m_nMovedCityCount=1;
-
-}
-*/
 //选择下一个城市
 //返回值 为城市编号
 int CAnt::ChooseNextCity()
