@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "rand.h"
+#include "ant.h"
 
 const double ALPHA=2.0; //启发因子，信息素的重要程度
 const double BETA=3.0;   //期望因子，城市间距离的重要程度
@@ -11,7 +12,6 @@ const double ROU=0.5; //信息素残留参数
 
 const int N_ANT_COUNT=256; //蚂蚁数量
 const int N_IT_COUNT=15; //迭代次数
-const int N_CITY_COUNT=318; //城市数量
 
 const double DBQ=100.0; //总的信息素
 const double DB_MAX=10e9; //一个标志数，10的9次方
@@ -22,25 +22,13 @@ double g_Distance[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间距离
 //tsp城市坐标数据
 double x_Ary[N_CITY_COUNT],y_Ary[N_CITY_COUNT];
 
-//返回指定范围内的随机整数
-//int rnd(int nLow,int nUpper)
-//{
-//    return (int)(nLow+(nUpper-nLow)*rand()/((double)RAND_MAX+1.0));
-//}
-
-//返回指定范围内的随机浮点数
-double rnd(double dbLow,double dbUpper)
-{
-    double dbTemp=rand()/((double)RAND_MAX+1.0);
-    return dbLow+dbTemp*(dbUpper-dbLow);
-}
-
 //返回浮点数四舍五入取整后的浮点数
 double ROUND(double dbA)
 {
     return (double)((int)(dbA+0.5));
 }
 
+/*
 //定义蚂蚁类
 class CAnt
 {
@@ -66,6 +54,7 @@ public:
     void CalPathLength(); //计算蚂蚁走过的路径长度
 
 };
+*/
 
 //构造函数
 CAnt::CAnt(void)
@@ -267,10 +256,10 @@ void CTsp::readTsp()
 {
 	int i,j;
 
-	FILE *fp=fopen("tsp/lin318.tsp","r") ;
+	FILE *fp=fopen("tsp/eil51.tsp","r") ;
 	if(fp == NULL)
 	{
-		printf("file not found!\n");
+		printf("sorry,file not found!\n");
 		exit(0);
 	}
 
