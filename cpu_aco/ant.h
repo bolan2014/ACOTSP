@@ -19,11 +19,19 @@ class CAnt
     int m_nMovedCityCount; //number if cities already visited
 
   public:
+    
+    //ants choose next city
+    int ChooseNextCity(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_CITY_COUNT][N_CITY_COUNT]);
+    
+    //initial ants'info
+    void Init();
+    
+    //ants'move
+    void Move(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_CITY_COUNT][N_CITY_COUNT]);
+    
+    //ants search path
+    void Search(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_CITY_COUNT][N_CITY_COUNT]);
 
-    int ChooseNextCity(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_CITY_COUNT][N_CITY_COUNT]); //ants choose next city
-    void Init(); //initial ants'info
-    void Move(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_CITY_COUNT][N_CITY_COUNT]); //ants'move
-    void Search(); //ants search path
-    void CalPathLength(double g_Distance[N_CITY_COUNT][N_CITY_COUNT]); //calculate length of path
-
+    //calculate length of path
+    void CalPathLength(double g_Distance[N_CITY_COUNT][N_CITY_COUNT]);
 };
