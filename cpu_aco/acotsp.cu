@@ -5,14 +5,6 @@
 
 #include "ant.h"
 
-const double ROU=0.5; //信息素残留参数
-
-const int N_ANT_COUNT=256; //蚂蚁数量
-const int N_IT_COUNT=15; //迭代次数
-
-const double DBQ=100.0; //总的信息素
-const double DB_MAX=10e9; //一个标志数，10的9次方
-
 double g_Trial[N_CITY_COUNT][N_CITY_COUNT]; //pheromone between every 2 cities
 double g_Distance[N_CITY_COUNT][N_CITY_COUNT]; //distance between every 2 cities
 
@@ -51,7 +43,6 @@ public:
     void UpdateTrial();
 
 };
-
 
 //构造函数
 CTsp::CTsp(void)
