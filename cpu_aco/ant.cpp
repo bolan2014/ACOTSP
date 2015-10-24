@@ -106,3 +106,22 @@ void CAnt::Move(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_
     m_nCurCityNo = nCityNo; 
     m_nMovedCityCount ++; 
 }
+
+void CAnt::CalPathLength(double g_Distance[N_CITY_COUNT][N_CITY_COUNT])
+{
+
+    m_dbPathLength = 0.0; //default 0
+    int m = 0;
+    int n = 0;
+
+    for (int i=1; i<N_CITY_COUNT; i++)
+    {
+        m = m_nPath[i];
+        n = m_nPath[i-1];
+        m_dbPathLength = m_dbPathLength+g_Distance[m][n];
+    }
+
+    //add the distance bewteen first and last city
+    n = m_nPath[0];
+    m_dbPathLength = m_dbPathLength+g_Distance[m][n];
+}
