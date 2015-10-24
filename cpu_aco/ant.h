@@ -1,7 +1,13 @@
+const int N_CITY_COUNT = 51; //number of cities
+const int N_ANT_COUNT = 256; //number of ants
+const int N_IT_COUNT = 15; //number of iterations
+
 const double ALPHA = 2.0;
 const double BETA = 3.0;
+const double ROU = 0.5;
 
-const int N_CITY_COUNT = 51;
+const double DBQ=100.0;
+const double DB_MAX=10e9;
 
 class CAnt
 {
