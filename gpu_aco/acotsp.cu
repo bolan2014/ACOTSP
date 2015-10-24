@@ -27,25 +27,16 @@ double *d_Distance,*d_Trial;
 //tsp城市坐标数据
 double x_Ary[N_CITY_COUNT],y_Ary[N_CITY_COUNT];
 
-//返回指定范围内的随机整数
-int rnd(int nLow,int nUpper)
-{
-    return (int)(nLow+(nUpper-nLow)*rand()/((double)RAND_MAX+1.0));
-}
-
 //返回0~1范围内的随机浮点数(device)
 void dev_rnd(unsigned int nSeed)
 {
 	curandGenerator_t gen;
 
-	//hostData = (float *)calloc(N_ANT_COUNT*N_CITY_COUNT, sizeof(float));
 	cudaMalloc((void **)&devData,N_ANT_COUNT*N_CITY_COUNT*sizeof(float));
 
 	curandCreateGenerator(&gen,CURAND_RNG_PSEUDO_DEFAULT);
 	curandSetPseudoRandomGeneratorSeed(gen,nSeed);
 	curandGenerateUniform(gen,devData,N_ANT_COUNT*N_CITY_COUNT);
-//	cudaMemcpy(hostData,devData,N_ANT_COUNT*N_CITY_COUNT * sizeof(float),
-//	        cudaMemcpyDeviceToHost);
 
 	curandDestroyGenerator(gen);
 }
