@@ -22,8 +22,8 @@ class CAnt
 
     int ChooseNextCity(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_CITY_COUNT][N_CITY_COUNT]); //ants choose next city
     void Init(); //initial ants'info
-    void Move(); //ants'move
+    void Move(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_CITY_COUNT][N_CITY_COUNT]); //ants'move
     void Search(); //ants search path
-    void CalPathLength(); //calculate length of path
+    void CalPathLength(double g_Distance[N_CITY_COUNT][N_CITY_COUNT]); //calculate length of path
 
 };
