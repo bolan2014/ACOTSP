@@ -25,21 +25,6 @@ double ROUND(double dbA)
     return (double)((int)(dbA+0.5));
 }
 
-//蚂蚁进行搜索一次
-void CAnt::Search()
-{
-    Init(); //蚂蚁搜索前，先初始化
-
-    //如果蚂蚁去过的城市数量小于城市数量，就继续移动
-    while (m_nMovedCityCount < N_CITY_COUNT)
-    {
-        Move(g_Trial, g_Distance);
-    }
-
-    //完成搜索后计算走过的路径长度
-    CalPathLength(g_Distance);
-}
-
 class CTsp
 {
 public:
@@ -179,7 +164,7 @@ void CTsp::Search()
         //每只蚂蚁搜索一遍
         for (int j=0;j<N_ANT_COUNT;j++)
         {
-            m_cAntAry[j].Search();
+            m_cAntAry[j].Search(g_Trial, g_Distance);
         }
 
         //保存最佳结果
