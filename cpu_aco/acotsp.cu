@@ -25,17 +25,6 @@ double ROUND(double dbA)
     return (double)((int)(dbA+0.5));
 }
 
-//蚂蚁在城市间移动
-/*void CAnt::Move()
-{
-    int nCityNo=ChooseNextCity(g_Trial, g_Distance); //选择下一个城市
-
-    m_nPath[m_nMovedCityCount]=nCityNo; //保存蚂蚁走的路径
-    m_nAllowedCity[nCityNo]=0;//把这个城市设置成已经去过了
-    m_nCurCityNo=nCityNo; //改变当前所在城市为选择的城市
-    m_nMovedCityCount++; //已经去过的城市数量加1
-}*/
-
 //蚂蚁进行搜索一次
 void CAnt::Search()
 {
@@ -48,33 +37,9 @@ void CAnt::Search()
     }
 
     //完成搜索后计算走过的路径长度
-    CalPathLength();
+    CalPathLength(g_Distance);
 }
 
-
-//计算蚂蚁走过的路径长度
-void CAnt::CalPathLength()
-{
-
-    m_dbPathLength=0.0; //先把路径长度置0
-    int m=0;
-    int n=0;
-
-    for (int i=1;i<N_CITY_COUNT;i++)
-    {
-        m=m_nPath[i];
-        n=m_nPath[i-1];
-        m_dbPathLength=m_dbPathLength+g_Distance[m][n];
-    }
-
-    //加上从最后城市返回出发城市的距离
-    n=m_nPath[0];
-    m_dbPathLength=m_dbPathLength+g_Distance[m][n];
-
-}
-
-
-//tsp类
 class CTsp
 {
 public:
