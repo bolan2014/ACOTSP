@@ -10,7 +10,7 @@ const double ROU=0.5; //信息素残留参数
 
 const int N_ANT_COUNT=256; //蚂蚁数量
 const int N_IT_COUNT=15; //迭代次数
-const int N_CITY_COUNT=150; //城市数量
+const int N_CITY_COUNT=51; //城市数量
 
 const double DBQ=100.0; //总的信息素
 const double DB_MAX=10e9; //一个标志数，10的9次方
@@ -291,7 +291,7 @@ void CTsp::readTsp()
 {
 	int i,j;
 
-	FILE *fp=fopen("tsp/ch150.tsp","r") ;
+	FILE *fp=fopen("tsp/eil51.tsp","r") ;
 	if(fp == NULL)
 	{
 		printf("sorry,file not found!\n");
