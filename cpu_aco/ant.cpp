@@ -125,3 +125,16 @@ void CAnt::CalPathLength(double g_Distance[N_CITY_COUNT][N_CITY_COUNT])
     n = m_nPath[0];
     m_dbPathLength = m_dbPathLength+g_Distance[m][n];
 }
+
+void CAnt::Search(double g_Trial[N_CITY_COUNT][N_CITY_COUNT], double g_Distance[N_CITY_COUNT][N_CITY_COUNT])
+{
+    Init(); //initialize ants before search
+
+    //ant search until all the cities visited
+    while (m_nMovedCityCount < N_CITY_COUNT)
+    {
+        Move(g_Trial, g_Distance);
+    }
+    //calculate the tour length
+    CalPathLength(g_Distance);
+}
