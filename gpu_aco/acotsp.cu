@@ -2,12 +2,12 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-#include <curand.h>
+//#include <curand.h>
 
 #include "rand.h"
 #include "ant.h"
 
-//const double ALPHA=2.0; //Æ·¢Ò×£¬ÐϢËµÄØª³̶È/
+//const double ALPHA=2.0; 
 //const double BETA=3.0;
 const double ROU=0.5; //信息素残留参数
 
@@ -22,7 +22,7 @@ double g_Trial[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间信息素，就是�
 double g_Distance[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间距离
 
 //for parallel cuRand
-float *devData;
+//float *devData;
 
 //data on device
 double *d_Distance,*d_Trial;
@@ -31,7 +31,7 @@ double *d_Distance,*d_Trial;
 double x_Ary[N_CITY_COUNT],y_Ary[N_CITY_COUNT];
 
 //返回0~1范围内的随机浮点数(device)
-void dev_rnd(unsigned int nSeed)
+/*void dev_rnd(unsigned int nSeed)
 {
 	curandGenerator_t gen;
 
@@ -42,7 +42,7 @@ void dev_rnd(unsigned int nSeed)
 	curandGenerateUniform(gen,devData,N_ANT_COUNT*N_CITY_COUNT);
 
 	curandDestroyGenerator(gen);
-}
+}*/
 
 //返回浮点数四舍五入取整后的浮点数
 double ROUND(double dbA)
@@ -50,27 +50,8 @@ double ROUND(double dbA)
     return (double)((int)(dbA+0.5));
 }
 
-//蚂蚁进行搜索
-__global__
-void antSearch_Kernel(CAnt *d_AntAry,double *d_Distance,double *d_Trial,float *devData)
-{
-	int i=threadIdx.x+blockIdx.x*blockDim.x;
 
-	if(i < N_ANT_COUNT)
-	{
-		d_AntAry[i].antInit(i,devData); //initialize data for every ant
-
-		while(d_AntAry[i].m_nMovedCityCount < N_CITY_COUNT)
-		{
-			d_AntAry[i].antMove(i,d_Distance,d_Trial,devData);
-		}
-		d_AntAry[i].antCalPathLength(i,d_Distance);
-	}
-}
-
-///////////////////////////////////////////////////////////////////////////////
-
-//tsp类
+//tsp class
 class CTsp
 {
 public:
