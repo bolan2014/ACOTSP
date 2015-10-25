@@ -32,6 +32,24 @@ CAnt::~CAnt(void)
 {
 }
 
+//kernel function
+__global__
+void antSearch_Kernel(CAnt *d_AntAry,double *d_Distance,double *d_Trial,float *devData)
+{
+        int i=threadIdx.x+blockIdx.x*blockDim.x;
+
+        if(i < N_ANT_COUNT)
+        {
+                d_AntAry[i].antInit(i,devData); //initialize data for every ant
+
+                while(d_AntAry[i].m_nMovedCityCount < N_CITY_COUNT)
+                {
+                        d_AntAry[i].antMove(i,d_Distance,d_Trial,devData);
+                }
+                d_AntAry[i].antCalPathLength(i,d_Distance);
+        }
+}
+
 __device__
 void CAnt:: antInit(int antID,float *devData)
 {
@@ -41,39 +59,37 @@ void CAnt:: antInit(int antID,float *devData)
         m_nPath[i]=0; //?..走Ã???¨é®¾ç
     }
 
-    //?..走Ã·¯å.å.ç¸º0
     m_dbPathLength=0.0;
-    //             //        //?..?..一ä.?..å    
+    //
     m_nCurCityNo=(int)N_CITY_COUNT*devData[antID];
-    //                         //            //?..?..å?å.è??°ç¸
+
     m_nPath[0]=m_nCurCityNo;
-    //                                     //                    //?..?ºå.?为已ç.è?
+
     m_nAllowedCity[m_nCurCityNo]=0;
-    //                                                 //                            //已Ã»Ã.å.?..ç¸º1
+
     m_nMovedCityCount=1;
 }
 
 __device__
 int CAnt::antChooseNextCity(int antID,int count,double *d_Distance,double *d_Trial,float *devData)
 {
-    int nSelectedCity=-1; //è.ç.ï.?..?..设置ä1
+    int nSelectedCity=-1; 
 
     //==============================================================================
-    //    //计ç½..?.??.²¡?»è..å??´ç¿¡æ´.»å
-    double dbTotal=0.0,tA,tB;
-    double prob[N_CITY_COUNT]; //ä.?.¸ª?.?è.¸­?.??
+    double dbTotal=0.0, tA, tB;
+    double prob[N_CITY_COUNT];
     //
     for (int i=0;i<N_CITY_COUNT;i++)
     {
-        if (m_nAllowedCity[i] == 1) //?.?没å¿
+        if (m_nAllowedCity[i] == 1) 
         {    
             //prob[i]=pow(d_Trial[m_nCurCityNo*N_CITY_COUNT+i],ALPHA)*pow(1.0/d_Distance[m_nCurCityNo*N_CITY_COUNT+i],BETA); //该å¸..å.?.??´ç¿¡æ´      
             tA=d_Trial[m_nCurCityNo*N_CITY_COUNT+i];
             tB=1.0/d_Distance[m_nCurCityNo*N_CITY_COUNT+i];
             prob[i]=(tA*tA)*(tB*tB*tB); //ALPHA=2.0,BETA=3.0
-            dbTotal=dbTotal+prob[i]; //ç.信æ´.?å.?»å       
+            dbTotal=dbTotal+prob[i]; 
         }
-        else //å.?.??»èº.??..è.¸­?.??.¼为0
+        else 
         {
             prob[i]=0.0;
         }
