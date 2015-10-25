@@ -30,20 +30,6 @@ double *d_Distance,*d_Trial;
 //tsp城市坐标数据
 double x_Ary[N_CITY_COUNT],y_Ary[N_CITY_COUNT];
 
-//返回0~1范围内的随机浮点数(device)
-/*void dev_rnd(unsigned int nSeed)
-{
-	curandGenerator_t gen;
-
-	cudaMalloc((void **)&devData,N_ANT_COUNT*N_CITY_COUNT*sizeof(float));
-
-	curandCreateGenerator(&gen,CURAND_RNG_PSEUDO_DEFAULT);
-	curandSetPseudoRandomGeneratorSeed(gen,nSeed);
-	curandGenerateUniform(gen,devData,N_ANT_COUNT*N_CITY_COUNT);
-
-	curandDestroyGenerator(gen);
-}*/
-
 //返回浮点数四舍五入取整后的浮点数
 double ROUND(double dbA)
 {
@@ -96,7 +82,7 @@ void CTsp::readTsp()
 {
 	int i,j;
 
-	FILE *fp=fopen("tsp/eil51.tsp","r") ;
+	FILE *fp=fopen(tspFile, "r") ;
 	if(fp == NULL)
 	{
 		printf("sorry,file not found!\n");
