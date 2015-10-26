@@ -5,6 +5,7 @@ float *devData;
 
 const int N_ANT_COUNT = 256;
 const int N_CITY_COUNT = 51; 
+const int N_IT_COUNT=15;
 
 //tsp file name
 const char *tspFile = "tsp/eil51.tsp";

@@ -11,18 +11,11 @@
 //const double BETA=3.0;
 const double ROU=0.5; //信息素残留参数
 
-//const int N_ANT_COUNT=256; //蚂蚁数量
-const int N_IT_COUNT=15; //迭代次数
-//const int N_CITY_COUNT=51; //城市数量
-
 const double DBQ=100.0; //总的信息素
 const double DB_MAX=10e9; //一个标志数，10的9次方
 
 double g_Trial[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间信息素，就是环境信息素
 double g_Distance[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间距离
-
-//for parallel cuRand
-//float *devData;
 
 //data on device
 double *d_Distance,*d_Trial;
@@ -102,8 +95,8 @@ CAnt *d_AntAry; //ants on GPU
 //初始化数据
 void CTsp::InitData()
 {
-	//read tsp file
-	readTsp();
+    //read tsp file
+    readTsp();
 
     //先把最优蚂蚁的路径长度设置成一个很大的值
     m_cBestAnt.m_dbPathLength=DB_MAX;
@@ -143,15 +136,15 @@ void CTsp::antSearch()
     cudaMalloc(&d_Distance,size);
     cudaMalloc(&d_Trial,size);
 
-	// data copy
-	cudaMemcpy(d_Distance,&g_Distance[0][0],size,cudaMemcpyHostToDevice);
-	cudaMemcpy(d_Trial,&g_Trial[0][0],size,cudaMemcpyHostToDevice);
+    // data copy
+    cudaMemcpy(d_Distance,&g_Distance[0][0],size,cudaMemcpyHostToDevice);
+    cudaMemcpy(d_Trial,&g_Trial[0][0],size,cudaMemcpyHostToDevice);
 
-	//kernel use
-	antSearch_Kernel<<<ceil(N_ANT_COUNT/256.0), 256.0>>>(d_AntAry,d_Distance,d_Trial,devData);
+    //kernel use
+    antSearch_Kernel<<<ceil(N_ANT_COUNT/256.0), 256.0>>>(d_AntAry,d_Distance,d_Trial,devData);
 
-	size=sizeof(CAnt)*N_ANT_COUNT;
-	cudaMemcpy(m_cAntAry, &d_AntAry[0],size,cudaMemcpyDeviceToHost);
+    size=sizeof(CAnt)*N_ANT_COUNT;
+    cudaMemcpy(m_cAntAry, &d_AntAry[0],size,cudaMemcpyDeviceToHost);
 }
 
 //更新环境信息素
