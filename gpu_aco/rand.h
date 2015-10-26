@@ -3,12 +3,12 @@
 //for parallel cuRand
 float *devData;
 
-const int N_ANT_COUNT = 256;
-const int N_CITY_COUNT = 51; 
-const int N_IT_COUNT=15;
+const int N_ANT_COUNT = 1024;
+const int N_CITY_COUNT = 318; 
+const int N_IT_COUNT = 15;
 
 //tsp file name
-const char *tspFile = "tsp/eil51.tsp";
+const char *tspFile = "tsp/lin318.tsp";
 
 void dev_rnd(unsigned int nSeed)
 {
