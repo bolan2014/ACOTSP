@@ -136,7 +136,7 @@ void CTsp::antSearch()
     cudaMalloc(&d_Distance,size);
     cudaMalloc(&d_Trial,size);
 
-    // data copy
+    //data copy
     cudaMemcpy(d_Distance,&g_Distance[0][0],size,cudaMemcpyHostToDevice);
     cudaMemcpy(d_Trial,&g_Trial[0][0],size,cudaMemcpyHostToDevice);
 
@@ -190,8 +190,6 @@ void CTsp::Search()
 
     char cBuf[256]; //打印信息用
 
-    //在迭代次数内进行循环
-    for (int i=0;i<N_IT_COUNT;i++)
     {
         //每只蚂蚁搜索一遍
         antSearch();
