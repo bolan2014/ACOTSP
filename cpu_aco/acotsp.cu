@@ -57,7 +57,7 @@ void CTsp::readTsp()
 {
 	int i,j;
 
-	FILE *fp=fopen("tsp/eil51.tsp","r") ;
+	FILE *fp=fopen("tsp/lin318.tsp","r") ;
 	if(fp == NULL)
 	{
 		printf("sorry,file not found!\n");
