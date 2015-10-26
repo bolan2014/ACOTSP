@@ -189,11 +189,11 @@ void CTsp::Search()
 {
 
     char cBuf[256]; //打印信息用
-
+    for (int i=0;i<N_IT_COUNT;i++)
     {
         //每只蚂蚁搜索一遍
         antSearch();
-
+   
         //保存最佳结果
         for (int j=0;j<N_ANT_COUNT;j++)
         {
