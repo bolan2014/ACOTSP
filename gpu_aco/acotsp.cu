@@ -141,7 +141,7 @@ void CTsp::antSearch()
     cudaMemcpy(d_Trial,&g_Trial[0][0],size,cudaMemcpyHostToDevice);
 
     //kernel use
-    antSearch_Kernel<<<ceil(N_ANT_COUNT/256.0), 256.0>>>(d_AntAry,d_Distance,d_Trial,devData);
+    antSearch_Kernel<<<ceil(N_ANT_COUNT/128.0), 128.0>>>(d_AntAry,d_Distance,d_Trial,devRnd);
 
     size=sizeof(CAnt)*N_ANT_COUNT;
     cudaMemcpy(m_cAntAry, &d_AntAry[0],size,cudaMemcpyDeviceToHost);
@@ -188,7 +188,7 @@ void CTsp::UpdateTrial()
 void CTsp::Search()
 {
 
-    char cBuf[N_IT_COUNT]; //打印信息用
+    char cBuf[128]; //打印信息用
 
     for (int i=0;i<N_IT_COUNT;i++)
     {
@@ -256,7 +256,7 @@ int main()
     printf("\nAnts' searching is done!\n");
 
     //release memory on device
-    cudaFree(devData);
+    cudaFree(devRnd);
     cudaFree(d_Distance);
     cudaFree(d_Trial);
     cudaFree(d_AntAry);
