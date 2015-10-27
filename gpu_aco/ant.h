@@ -16,10 +16,10 @@ public:
 
 public:
 
-    __device__ void antInit(int antID,float *devData);
-    __device__ void antMove(int antID,double *d_Distance,double *d_Trial,float *devData);
+    __device__ void antInit(int antID,float *devRnd);
+    __device__ void antMove(int antID,double *d_Distance,double *d_Trial,float *devRnd);
     __device__ void antCalPathLength(int antID,double *d_Distance);
-    __device__ int antChooseNextCity(int antID,int count,double *d_Distance,double *d_Trial,float *devData);
+    __device__ int antChooseNextCity(int antID,int count,double *d_Distance,double *d_Trial,float *devRnd);
 };
 
 //Constructor
@@ -34,24 +34,24 @@ CAnt::~CAnt(void)
 
 //kernel function
 __global__
-void antSearch_Kernel(CAnt *d_AntAry,double *d_Distance,double *d_Trial,float *devData)
+void antSearch_Kernel(CAnt *d_AntAry,double *d_Distance,double *d_Trial,float *devRnd)
 {
         int i=threadIdx.x+blockIdx.x*blockDim.x;
 
         if(i < N_ANT_COUNT)
         {
-                d_AntAry[i].antInit(i,devData); //initialize data for every ant
+                d_AntAry[i].antInit(i,devRnd); //initialize data for every ant
 
                 while(d_AntAry[i].m_nMovedCityCount < N_CITY_COUNT)
                 {
-                        d_AntAry[i].antMove(i,d_Distance,d_Trial,devData);
+                        d_AntAry[i].antMove(i,d_Distance,d_Trial,devRnd);
                 }
                 d_AntAry[i].antCalPathLength(i,d_Distance);
         }
 }
 
 __device__
-void CAnt:: antInit(int antID,float *devData)
+void CAnt:: antInit(int antID,float *devRnd)
 {
     for (int i=0;i<N_CITY_COUNT;i++)
     {
@@ -61,7 +61,7 @@ void CAnt:: antInit(int antID,float *devData)
 
     m_dbPathLength=0.0;
     //
-    m_nCurCityNo=(int)N_CITY_COUNT*devData[antID];
+    m_nCurCityNo=(int)N_CITY_COUNT*devRnd[antID];
 
     m_nPath[0]=m_nCurCityNo;
 
@@ -71,7 +71,7 @@ void CAnt:: antInit(int antID,float *devData)
 }
 
 __device__
-int CAnt::antChooseNextCity(int antID,int count,double *d_Distance,double *d_Trial,float *devData)
+int CAnt::antChooseNextCity(int antID,int count,double *d_Distance,double *d_Trial,float *devRnd)
 {
     int nSelectedCity=-1; 
 
@@ -98,7 +98,7 @@ int CAnt::antChooseNextCity(int antID,int count,double *d_Distance,double *d_Tri
     double dbTemp=0.0;
     if (dbTotal > 0.0)
     {
-        dbTemp=dbTotal * devData[m_nMovedCityCount+antID*N_CITY_COUNT-1];
+        dbTemp=dbTotal * devRnd[m_nMovedCityCount+antID*N_CITY_COUNT-1];
 
         for (int i=0;i<N_CITY_COUNT;i++)
         {
@@ -130,9 +130,9 @@ int CAnt::antChooseNextCity(int antID,int count,double *d_Distance,double *d_Tri
 }
 
 __device__
-void CAnt::antMove(int antID,double *d_Distance,double *d_Trial,float *devData)
+void CAnt::antMove(int antID,double *d_Distance,double *d_Trial,float *devRnd)
 {
-    int nCityNo=antChooseNextCity(antID,m_nMovedCityCount,d_Distance,d_Trial,devData);
+    int nCityNo=antChooseNextCity(antID,m_nMovedCityCount,d_Distance,d_Trial,devRnd);
     m_nPath[m_nMovedCityCount]=nCityNo;
     m_nAllowedCity[nCityNo]=0;
     m_nCurCityNo=nCityNo;

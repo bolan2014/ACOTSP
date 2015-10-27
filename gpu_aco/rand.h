@@ -1,7 +1,7 @@
 #include <curand.h>
 
 //for parallel cuRand
-float *devData;
+float *devRnd;
 
 const int N_ANT_COUNT = 1024;
 const int N_CITY_COUNT = 318; 
@@ -14,11 +14,11 @@ void dev_rnd(unsigned int nSeed)
 {
         curandGenerator_t gen;
 
-        cudaMalloc((void **)&devData, N_ANT_COUNT*N_CITY_COUNT*sizeof(float));
+        cudaMalloc((void **)&devRnd, N_ANT_COUNT*N_CITY_COUNT*sizeof(float));
 
         curandCreateGenerator(&gen, CURAND_RNG_PSEUDO_DEFAULT);
         curandSetPseudoRandomGeneratorSeed(gen, nSeed);
-        curandGenerateUniform(gen, devData, N_ANT_COUNT*N_CITY_COUNT);
+        curandGenerateUniform(gen, devRnd, N_ANT_COUNT*N_CITY_COUNT);
 
         curandDestroyGenerator(gen);
 }
