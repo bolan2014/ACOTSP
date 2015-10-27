@@ -188,7 +188,8 @@ void CTsp::UpdateTrial()
 void CTsp::Search()
 {
 
-    char cBuf[256]; //打印信息用
+    char cBuf[N_IT_COUNT]; //打印信息用
+
     for (int i=0;i<N_IT_COUNT;i++)
     {
         //每只蚂蚁搜索一遍
