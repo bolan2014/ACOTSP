@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <math.h>
 #include <time.h>
-//#include <curand.h>
 
 #include "rand.h"
 #include "ant.h"
@@ -19,6 +18,9 @@ double g_Distance[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间距离
 
 //data on device
 double *d_Distance,*d_Trial;
+
+//texture memory
+texture<double, 1, cudaReadModeElementType> tex;
 
 //tsp城市坐标数据
 double x_Ary[N_CITY_COUNT],y_Ary[N_CITY_COUNT];
@@ -140,6 +142,9 @@ void CTsp::antSearch()
     cudaMemcpy(d_Distance,&g_Distance[0][0],size,cudaMemcpyHostToDevice);
     cudaMemcpy(d_Trial,&g_Trial[0][0],size,cudaMemcpyHostToDevice);
 
+	//bind texture
+	cudaBindTexture(0, tex, d_Distance);
+
     //kernel use
     antSearch_Kernel<<<ceil(N_ANT_COUNT/128.0), 128.0>>>(d_AntAry,d_Distance,d_Trial,devRnd);
 
@@ -254,6 +259,9 @@ int main()
     duration = (double)(UTime - MyTime) / CLOCKS_PER_SEC;
     printf("\nTotal time is %0.3f seconds\n", duration);
     printf("\nAnts' searching is done!\n");
+
+	//unbind texture
+	cudaUnbindTexture(tex);
 
     //release memory on device
     cudaFree(devRnd);
