@@ -133,41 +133,28 @@ void CTsp::antSearch()
     antSearch_Kernel<<<ceil(N_ANT_COUNT/128.0), 128.0>>>(d_AntAry,d_Distance,d_Trial,devData);
     
     //pheromone evaporation
-	evaporateTrial_Kernel<<<ceil(N_CITY_COUNT*N_CITY_COUNT/256.0), 256.0>>>(d_Trial);
+    evaporateTrial_Kernel<<<ceil(N_CITY_COUNT*N_CITY_COUNT/256.0), 256.0>>>(d_Trial);
 
-	//pheromone strengthen
-	enhanceTrial_Kernel<<<ceil(N_ANT_COUNT/128.0), 128.0>>>(d_AntAry,d_Trial);
+    //pheromone strengthen
+    enhanceTrial_Kernel<<<ceil(N_ANT_COUNT/128.0), 128.0>>>(d_AntAry,d_Trial);
 
     size=sizeof(CAnt)*N_ANT_COUNT;
     cudaMemcpy(m_cAntAry, &d_AntAry[0],size,cudaMemcpyDeviceToHost);
 }
-
-/*__global__ 
-void initTrial_Kernel(double *d_Trial)
-{
-	int i=threadIdx.x+blockIdx.x*blockDim.x;
-
-	if(i < N_CITY_COUNT*N_CITY_COUNT)
-	{
-		d_Trial[i] = 1.0;
-	}
-}*/
 
 void CTsp::Search()
 {
 
     char cBuf[128]; //打印信息用
 
-	size=sizeof(double)*N_CITY_COUNT*N_CITY_COUNT;
+    size=sizeof(double)*N_CITY_COUNT*N_CITY_COUNT;
     cudaMalloc(&d_Distance,size);
     cudaMalloc(&d_Trial,size);
 
-	cudaMemcpy(d_Distance,&g_Distance[0][0],size,cudaMemcpyHostToDevice);
-	cudaMemcpy(d_Trial,&g_Trial[0][0],size,cudaMemcpyHostToDevice);
+    cudaMemcpy(d_Distance,&g_Distance[0][0],size,cudaMemcpyHostToDevice);
+    cudaMemcpy(d_Trial,&g_Trial[0][0],size,cudaMemcpyHostToDevice);
 
-	//initTrial_Kernel<<<ceil(N_CITY_COUNT*N_CITY_COUNT/256.0), 256.0>>>(d_Trial);
-
-	size=sizeof(CAnt)*N_ANT_COUNT;
+    size=sizeof(CAnt)*N_ANT_COUNT;
     cudaMalloc(&d_AntAry,size);
 
     for (int i=0;i<N_IT_COUNT;i++)
