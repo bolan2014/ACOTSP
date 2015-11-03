@@ -20,7 +20,8 @@ double g_Distance[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间距离
 double *d_Distance,*d_Trial;
 
 //texture memory
-texture<double, 1, cudaReadModeElementType> tex;
+texture<double, 1, cudaReadModeElementType> Dis;
+texture<double, 1, cudaReadModeElementType> Tri;
 
 //tsp城市坐标数据
 double x_Ary[N_CITY_COUNT],y_Ary[N_CITY_COUNT];
@@ -142,8 +143,9 @@ void CTsp::antSearch()
     cudaMemcpy(d_Distance,&g_Distance[0][0],size,cudaMemcpyHostToDevice);
     cudaMemcpy(d_Trial,&g_Trial[0][0],size,cudaMemcpyHostToDevice);
 
-	//bind texture
-	cudaBindTexture(0, tex, d_Distance);
+    //bind texture
+    cudaBindTexture(0, Dis, d_Distance);
+    cudaBindTexture(0, Tri, d_Trial);
 
     //kernel use
     antSearch_Kernel<<<ceil(N_ANT_COUNT/128.0), 128.0>>>(d_AntAry,d_Distance,d_Trial,devRnd);
@@ -261,8 +263,8 @@ int main()
     printf("\nAnts' searching is done!\n");
 
 	//unbind texture
-	cudaUnbindTexture(tex);
-
+	cudaUnbindTexture(Dis);
+    cudaUnbindTexture(Tri);
     //release memory on device
     cudaFree(devRnd);
     cudaFree(d_Distance);
