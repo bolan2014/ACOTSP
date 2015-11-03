@@ -262,9 +262,10 @@ int main()
     printf("\nTotal time is %0.3f seconds\n", duration);
     printf("\nAnts' searching is done!\n");
 
-	//unbind texture
-	cudaUnbindTexture(Dis);
+    //unbind texture
+    cudaUnbindTexture(Dis);
     cudaUnbindTexture(Tri);
+    
     //release memory on device
     cudaFree(devRnd);
     cudaFree(d_Distance);
