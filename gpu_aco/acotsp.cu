@@ -155,7 +155,7 @@ void CTsp::antSearch()
 }
 
 //更新环境信息素
-void CTsp::UpdateTrial()
+/*void CTsp::UpdateTrial()
 {
     //临时数组，保存各只蚂蚁在两两城市间新留下的信息素
     double dbTempAry[N_CITY_COUNT][N_CITY_COUNT];
@@ -188,6 +188,33 @@ void CTsp::UpdateTrial()
         for (int j=0;j<N_CITY_COUNT;j++)
         {
             g_Trial[i][j]=g_Trial[i][j]*ROU+dbTempAry[i][j]; //最新的环境信息素 = 留存的信息素 + 新留下的信息素
+        }
+    }
+}*/
+
+void CTsp::UpdateTrial()
+{
+    double dbTempAry[N_CITY_COUNT][N_CITY_COUNT];
+    memset(dbTempAry, 0 , sizeof(dbTempAry));
+
+    int m = 0;
+    int n = 0;
+    for(int i=1; i<N_CITY_COUNT; i++)
+    {
+        m = m_cBestAnt.m_nPath[i];
+        n = m_cBestAnt.m_nPath[i-1];
+        dbTempAry[n][m] += DBQ/m_cBestAnt.m_dbPathLength;
+        dbTempAry[m][n] = dbTempAry[n][m];
+    }
+    n = m_cBestAnt.m_nPath[0];
+    dbTempAry[n][m] += DBQ/m_cBestAnt.m_dbPathLength;
+    dbTempAry[m][n] = dbTempAry[n][m];
+
+    for(int i=0; i<N_CITY_COUNT; i++)
+    {
+        for(int j=0; j<N_CITY_COUNT; j++)
+        {
+            g_Trial[i][j] = g_Trial[i][j]*ROU + dbTempAry[i][j];
         }
     }
 }
