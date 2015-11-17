@@ -18,6 +18,9 @@ double g_Distance[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间距离
 //data on device
 double *d_Distance,*d_Trial;
 
+//ants on GPU
+CAnt *d_AntAry;
+
 //tsp城市坐标数据
 double x_Ary[N_CITY_COUNT],y_Ary[N_CITY_COUNT];
 
@@ -39,9 +42,8 @@ public:
     ~CTsp(void);
 
 public:
-    CAnt m_cAntAry[N_ANT_COUNT]; //蚂蚁数组(host)
+    //CAnt m_cAntAry[N_ANT_COUNT]; //蚂蚁数组(host)
     CAnt *m_cBestAnt; //定义一个蚂蚁变量，用来保存搜索过程中的最优结果
-                                        //该蚂蚁不参与搜索，只是用来保存最优结果
 
 public:
 
@@ -91,7 +93,6 @@ void CTsp::readTsp()
 	fclose(fp);
 }
 
-CAnt *d_AntAry; //ants on GPU
 
 //初始化数据
 void CTsp::InitData()
@@ -100,6 +101,7 @@ void CTsp::InitData()
     readTsp();
 
     m_cBestAnt = (CAnt*)malloc(sizeof(CAnt));
+
     //先把最优蚂蚁的路径长度设置成一个很大的值
     //m_cBestAnt[0].m_dbPathLength=DB_MAX;
 
@@ -138,9 +140,6 @@ void CTsp::antSearch()
 
     //pheromone strengthen
     enhanceTrial_Kernel<<<1.0, 1.0>>>(d_AntAry,d_Trial);
-
-    size = sizeof(CAnt);
-    cudaMemcpy(m_cBestAnt, &d_AntAry[0],size,cudaMemcpyDeviceToHost);
 }
 
 void CTsp::Search()
@@ -148,20 +147,23 @@ void CTsp::Search()
 
     char cBuf[128]; //打印信息用
 
-    size=sizeof(double)*N_CITY_COUNT*N_CITY_COUNT;
-    cudaMalloc(&d_Distance,size);
-    cudaMalloc(&d_Trial,size);
+    size = sizeof(double)*N_CITY_COUNT*N_CITY_COUNT;
+    cudaMalloc(&d_Distance, size);
+    cudaMalloc(&d_Trial, size);
 
-    cudaMemcpy(d_Distance,&g_Distance[0][0],size,cudaMemcpyHostToDevice);
-    cudaMemcpy(d_Trial,&g_Trial[0][0],size,cudaMemcpyHostToDevice);
+    cudaMemcpy(d_Distance, &g_Distance[0][0], size, cudaMemcpyHostToDevice);
+    cudaMemcpy(d_Trial, &g_Trial[0][0], size, cudaMemcpyHostToDevice);
 
-    size=sizeof(CAnt)*N_ANT_COUNT;
-    cudaMalloc(&d_AntAry,size);
+    size=sizeof(CAnt) * N_ANT_COUNT;
+    cudaMalloc(&d_AntAry, size);
 
     for (int i=0;i<N_IT_COUNT;i++)
     {
         //每只蚂蚁搜索一遍
         antSearch();
+
+        size = sizeof(CAnt);
+        cudaMemcpy(m_cBestAnt, &d_AntAry[0], size, cudaMemcpyDeviceToHost);
    
         /*保存最佳结果
         for (int j=0;j<N_ANT_COUNT;j++)
