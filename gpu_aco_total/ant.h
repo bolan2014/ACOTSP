@@ -2,7 +2,7 @@
 
 const double DBQ = 100.0; //total pheromone
 
-const double ROU = 0.5; //param for evaporation
+const double ROU = 0.9; //param for evaporation
 
 class CAnt
 {
@@ -76,19 +76,25 @@ void enhanceTrial_Kernel(CAnt *d_AntAry,double *d_Trial)
 	int i = threadIdx.x+blockIdx.x*blockDim.x;
 
 	int m, n;
-	if(i < N_ANT_COUNT)
+	if(i < 1)
 	{
-		for (int j = 1; j < N_CITY_COUNT; ++j)
+        for(int k=1; k<N_ANT_COUNT; k++)
         {
-            m = d_AntAry[i].m_nPath[j];
-            n = d_AntAry[i].m_nPath[j-1];
+            if(d_AntAry[k].m_dbPathLength < d_AntAry[0].m_dbPathLength)
+                d_AntAry[0] = d_AntAry[k];
+        }
+    
+        for(int j = 1; j < N_CITY_COUNT; ++j)
+        {
+            m = d_AntAry[0].m_nPath[j];
+            n = d_AntAry[0].m_nPath[j-1];
  
-            d_Trial[n*N_CITY_COUNT+m] += d_AntAry[i].deposit;
+            d_Trial[n*N_CITY_COUNT+m] += d_AntAry[0].deposit;
             d_Trial[m*N_CITY_COUNT+n] = d_Trial[n*N_CITY_COUNT+m];
         }
  
         n = d_AntAry[i].m_nPath[0];
-        d_Trial[n*N_CITY_COUNT+m] += d_AntAry[i].deposit;
+        d_Trial[n*N_CITY_COUNT+m] += d_AntAry[0].deposit;
         d_Trial[m*N_CITY_COUNT+n] = d_Trial[n*N_CITY_COUNT+m];
     }
 }
