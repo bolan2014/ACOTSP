@@ -10,7 +10,7 @@
 //const double BETA=3.0;
 //const double ROU=0.5; //信息素残留参数
 
-const double DB_MAX=10e9; //一个标志数，10的9次方
+//const double DB_MAX=10e9; //一个标志数，10的9次方
 
 double g_Trial[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间信息素，就是环境信息素
 double g_Distance[N_CITY_COUNT][N_CITY_COUNT]; //两两城市间距离
@@ -40,7 +40,7 @@ public:
 
 public:
     CAnt m_cAntAry[N_ANT_COUNT]; //蚂蚁数组(host)
-    CAnt m_cBestAnt; //定义一个蚂蚁变量，用来保存搜索过程中的最优结果
+    CAnt *m_cBestAnt; //定义一个蚂蚁变量，用来保存搜索过程中的最优结果
                                         //该蚂蚁不参与搜索，只是用来保存最优结果
 
 public:
@@ -99,8 +99,9 @@ void CTsp::InitData()
     //read tsp file
     readTsp();
 
+    m_cBestAnt = (CAnt*)malloc(sizeof(CAnt));
     //先把最优蚂蚁的路径长度设置成一个很大的值
-    m_cBestAnt.m_dbPathLength=DB_MAX;
+    //m_cBestAnt[0].m_dbPathLength=DB_MAX;
 
     //计算两两城市间距离
     double dbTemp=0.0;
@@ -136,10 +137,10 @@ void CTsp::antSearch()
     evaporateTrial_Kernel<<<ceil(N_CITY_COUNT*N_CITY_COUNT/256.0), 256.0>>>(d_Trial);
 
     //pheromone strengthen
-    enhanceTrial_Kernel<<<ceil(N_ANT_COUNT/128.0), 128.0>>>(d_AntAry,d_Trial);
+    enhanceTrial_Kernel<<<1.0, 1.0>>>(d_AntAry,d_Trial);
 
-    size=sizeof(CAnt)*N_ANT_COUNT;
-    cudaMemcpy(m_cAntAry, &d_AntAry[0],size,cudaMemcpyDeviceToHost);
+    size = sizeof(CAnt);
+    cudaMemcpy(m_cBestAnt, &d_AntAry[0],size,cudaMemcpyDeviceToHost);
 }
 
 void CTsp::Search()
@@ -162,20 +163,20 @@ void CTsp::Search()
         //每只蚂蚁搜索一遍
         antSearch();
    
-        //保存最佳结果
+        /*保存最佳结果
         for (int j=0;j<N_ANT_COUNT;j++)
         {
             if (m_cAntAry[j].m_dbPathLength < m_cBestAnt.m_dbPathLength)
             {
                 m_cBestAnt=m_cAntAry[j];
             }
-        }
+        }*/
 
         //更新环境信息素
         //UpdateTrial();
 
         //输出目前为止找到的最优路径的长度
-        sprintf(cBuf,"\n[%d] %.0f",i+1,m_cBestAnt.m_dbPathLength);
+        sprintf(cBuf,"\n[%d] %.0f",i+1,m_cBestAnt[0].m_dbPathLength);
         printf(cBuf);
     }
 }
